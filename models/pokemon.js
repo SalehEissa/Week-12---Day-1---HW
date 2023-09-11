@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 
 const pokemonSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  img: { type: String, required: true },
-}, { timestamps: true });
+  name: String,
+  img: String,
+});
 
-const Pokemon = mongoose.model('Pokemon', pokemonSchema);
+const Pokemon = mongoose.model("Pokemon", pokemonSchema);
 
-export default Pokemon;
+module.exports = Pokemon;

@@ -1,5 +1,5 @@
 import express from 'express';
-import Pokemon from '../models/pokemon.js';
+import { Pokemon } from '../models/pokemon.mjs'; 
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const pokemon = await Pokemon.find({});
     res.status(200).render('Index', { pokemon });
   } catch (error) {
-    console.error(error.message);
+    console.log(error.message);
     res.status(400).send({ message: error.message });
   }
 });
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     await Pokemon.create(req.body);
     res.status(201).redirect('/pokemon');
   } catch (error) {
-    console.error(error.message);
+    console.log(error.message);
     res.status(400).send({ message: error.message });
   }
 });
@@ -31,23 +31,14 @@ router.get('/:id', async (req, res) => {
   try {
     res.status(200).render('Show', { pokemon: req.pokemon });
   } catch (error) {
-    console.error(error.message);
+    console.log(error.message);
     res.status(400).send({ message: error.message });
   }
 });
 
 router.param('id', async (req, res, next, id) => {
-  try {
-    const pokemon = await Pokemon.findById(id);
-    if (!pokemon) {
-      return res.status(404).send({ message: 'Pokemon not found' });
-    }
-    req.pokemon = pokemon;
-    next();
-  } catch (error) {
-    console.error(error.message);
-    res.status(400).send({ message: error.message });
-  }
+  req.pokemon = await Pokemon.findById(id);
+  next();
 });
 
 export default router;

@@ -1,18 +1,21 @@
-import React from 'react';
+const express = require('express');
+const router = express.Router();
+const Pokemon = require('../models/pokemonModel'); 
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pokemon = await Pokemon.findById(id);
 
-class Show extends React.Component {
-  render() {
-    const { pokemon } = this.props;
+    if (!pokemon) {
+      res.status(404).send('Pokemon not found');
+      return;
+    }
 
-    return (
-      <main>
-        <h1>Gotta Catch 'Em All</h1>
-        <h2>{pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h2>
-        <img src={`${pokemon.img}.jpg`} alt={pokemon.name} /><br />
-        <a href='/pokemon'>Back</a>
-      </main>
-    );
+    res.status(200).render('Show', { pokemon });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Internal Server Error');
   }
-}
+});
 
-export default Show;
+module.exports = router;
